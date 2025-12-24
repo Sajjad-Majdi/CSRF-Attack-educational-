@@ -1,62 +1,60 @@
-# CSRF Proof of Concept (Educational)
+# اثبات مفهوم CSRF (آموزشی)
 
-This project demonstrates a Cross-Site Request Forgery (CSRF) attack.
+این پروژه یک حمله جعل درخواست میان‌سایتی (CSRF) را نمایش می‌دهد.
 
-## Prerequisites
+## پیش‌نیازها
 
 - Python 3.x
 - Flask (`pip install flask`)
 
-## Setup Instructions
+## دستورالعمل‌های راه‌اندازی
 
-### 1. Start the Victim Site (SecureCrypto)
+### ۱. راه‌اندازی سایت قربانی (SecureCrypto)
 
-1. Open a terminal in the `victim_app` directory.
-2. Run the Flask application:
-   ```bash
-   python app.py
-   ```
-3. The site will be available at `http://127.0.0.1:5050`.
+۱. یک ترمینال در دایرکتوری `victim_app` باز کنید.
+۲. برنامه Flask را اجرا کنید:
+`bash
+    python app.py
+    `
+۳. سایت در آدرس `http://127.0.0.1:5050` در دسترس خواهد بود.
 
-### 2. Start the Attacker Site (YouWonPrize)
+### ۲. راه‌اندازی سایت مهاجم (YouWonPrize)
 
-1. Open a **second terminal** in the `attacker_app` directory.
-2. Run the attacker's Flask server:
-   ```bash
-   python app.py
-   ```
-3. The attacker site will be available at `http://127.0.0.1:8080`.
+۱. یک **ترمینال دوم** در دایرکتوری `attacker_app` باز کنید.
+۲. سرور Flask مهاجم را اجرا کنید:
+`bash
+    python app.py
+    `
+۳. سایت مهاجم در آدرس `http://127.0.0.1:8080` در دسترس خواهد بود.
 
-### 3. Log in to the Victim Site
+### ۳. ورود به سایت قربانی
 
-1. Open your browser and go to `http://127.0.0.1:5050/login`.
-2. Use the following credentials:
-   - **Username:** `alice`
-   - **Password:** `password123`
-3. You will be redirected to the dashboard, showing your current email: `alice@securecrypto.com`.
+۱. مرورگر خود را باز کرده و به `http://127.0.0.1:5050/login` بروید.
+۲. از اطلاعات ورود زیر استفاده کنید: - **نام کاربری:** `alice` - **رمز عبور:** `password123`
+۳. شما به داشبورد هدایت می‌شوید که ایمیل فعلی شما را نشان می‌دهد: `alice@securecrypto.com`.
 
-### 4. Execute the Attack
+### ۴. اجرای حمله
 
-1. **IMPORTANT:** Keep the Victim Site tab open and logged in (simulating an active session).
-2. Open a **NEW TAB** in the same browser and visit `http://127.0.0.1:8080`.
-3. You will see a flashy "You Won an iPhone!" page.
-4. After 1 second, the page will silently send a malicious request in the background to the Victim Site.
-5. The exploit page will **stay visible** (you won't be redirected).
+۱. **مهم:** زبانه سایت قربانی را باز و وارد شده نگه دارید (شبیه‌سازی یک نشست فعال).
+۲. یک **زبانه جدید** در همان مرورگر باز کنید و از `http://127.0.0.1:8080` بازدید کنید.
+۳. شما یک صفحه پر زرق و برق "شما برنده یک آیفون شدید!" را خواهید دید.
+۴. پس از100 میلی ثانیه صفحه به صورت بی‌صدا یک درخواست مخرب در پس‌زمینه به سایت قربانی ارسال می‌کند که ایمیل اورا تغییر میدهد.
 
-### 5. Verify the Result
+### ۵. تایید نتیجه (صفحه SecureCrypto باید رفرش شود)
 
-1. Go back to the SecureCrypto dashboard tab (or refresh it).
-2. Look at the "Current Email" - it will have changed to `hacker@evil.com`.
-3. The attack succeeded without you noticing!
+۱. به زبانه داشبورد SecureCrypto برگردید (یا آن را رفرش کنید).
+۲. به "Current Email" نگاه کنید - به `hacker@evil.com` تغییر یافته است.
+۳. حمله بدون اینکه متوجه شوید با موفقیت انجام شد!
+۴. صفحه سایت مهاجم نیز نیاز به رفرش دارد که این اتومات انجام میشود.
 
-## How it Works
+## نحوه عملکرد
 
-The Victim Site (`SecureCrypto`) does not use CSRF tokens. It relies solely on the session cookie for authentication. When you visit the Attacker Site while logged into SecureCrypto, the browser automatically includes your session cookie in the request triggered by the attacker's hidden form. The server sees a valid cookie and processes the email change request as if you had performed it yourself.
+سایت قربانی (`SecureCrypto`) از توکن‌های CSRF استفاده نمی‌کند. این سایت صرفاً برای احراز هویت به کوکی نشست (session cookie) متکی است. هنگامی که در حین ورود به SecureCrypto از سایت مهاجم بازدید می‌کنید، مرورگر به طور خودکار کوکی نشست شما را در درخواستی که توسط فرم مخفی مهاجم تحریک شده است، قرار می‌دهد. سرور یک کوکی معتبر را می‌بیند و درخواست تغییر ایمیل را به گونه‌ای پردازش می‌کند که گویی خودتان آن را انجام داده‌اید.
 
-## Prevention
+## پیشگیری
 
-To fix this vulnerability, the Victim Site should:
+برای رفع این آسیب‌پذیری، سایت قربانی باید:
 
-1. Implement **CSRF Tokens**: A unique, secret, and unpredictable token for each session.
-2. Use **SameSite Cookie Attribute**: Set cookies to `SameSite=Lax` or `SameSite=Strict`.
-3. Verify the **Origin/Referer** headers.
+۱. **توکن‌های CSRF** را پیاده‌سازی کند: یک توکن منحصر به فرد، مخفی و غیرقابل پیش‌بینی برای هر نشست.
+۲. از **ویژگی SameSite کوکی** استفاده کند: کوکی‌ها را روی `SameSite=Lax` یا `SameSite=Strict` تنظیم کند.
+۳. هدرهای **Origin/Referer** را بررسی کند.
