@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = 'super-secret-key-for-educational-purposes'
 
 # Database setup
-DB_PATH = 'database.db'
+DB_PATH = os.path.join(os.path.dirname(__file__), 'database.db')
 
 
 def init_db():
@@ -92,5 +92,12 @@ def logout():
 
 if __name__ == '__main__':
     init_db()
-    # Running on port 5000
-    app.run(debug=True, port=5000)
+    # Default away from port 5000 on Windows (some environments block it).
+    host = os.getenv('SECURECRYPTO_HOST', '127.0.0.1')
+    try:
+        port = int(os.getenv('SECURECRYPTO_PORT', '5050'))
+    except ValueError:
+        port = 5050
+
+    # Disable the reloader to avoid double-bind issues in some setups.
+    app.run(debug=True, host=host, port=port, use_reloader=False)
