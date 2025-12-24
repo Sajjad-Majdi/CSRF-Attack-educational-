@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureCrypto | Institutional Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --accent-color: #00ff9d;
+            --text-primary: #e5e4e2;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'IBM+Plex+Mono', monospace;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 157, 0.05) 0%, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .login-container {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            color: rgba(229, 228, 226, 0.6);
+        }
+
+        input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            color: var(--text-primary);
+            font-family: 'IBM+Plex+Mono', monospace;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        button {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 1rem;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+
+        .flash-messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+            color: #ff4d4d;
+            text-align: center;
+        }
+
+        .vault-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 1rem;
+            display: block;
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .vault-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-color);
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="vault-icon"></div>
+        <h1>SecureCrypto</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flash-messages">
+            {% for category, message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="input-group">
+                <label for="username">Identity Identifier</label>
+                <input type="text" id="username" name="username" required autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label for="password">Access Key</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Initialize Session</button>
+        </form>
+    </div>
+</body>
+</html>
